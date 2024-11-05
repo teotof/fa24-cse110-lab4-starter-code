@@ -1,5 +1,6 @@
 import React, { useState, useContext } from "react";
 import { AppContext } from "../../context/AppContext";
+import { createExpense } from "../../utils/expense-utils";
 
 const AddExpenseForm = () => {
   // Exercise: Consume the AppContext here
@@ -16,9 +17,13 @@ const AddExpenseForm = () => {
     // Add new expense to the expenses context array
     const newExpense = {
       id: (expenses.length + 1).toString(), // Assuming there's an 'id' field for uniqueness
-      name: name,
+      description: name,
       cost: parseFloat(cost), // Convert cost to a number
     };
+
+    // Call createExpense before setting the expenses in context
+    createExpense(newExpense);
+
     setExpenses([...expenses, newExpense]);
 
     // Clear the form fields after submission
@@ -37,7 +42,6 @@ const AddExpenseForm = () => {
             className="form-control"
             id="name"
             value={name}
-            // HINT: onChange={}
             onChange={e => setName(e.target.value)}
           ></input>
         </div>
@@ -49,7 +53,6 @@ const AddExpenseForm = () => {
             className="form-control"
             id="cost"
             value={cost}
-            // HINT: onChange={}
             onChange={e => setCost(e.target.value)}
           ></input>
         </div>
