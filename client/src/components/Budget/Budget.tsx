@@ -1,5 +1,6 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { AppContext } from "../../context/AppContext";
+import { fetchBudget, updateBudget } from "../../utils/budget-utils";
 import "./Budget.css";
 
 const Budget = () => {
@@ -7,12 +8,37 @@ const Budget = () => {
   const [editMode, setEditMode] = useState(false);
   const [inputValue, setInputValue] = useState(budget.toString());
 
+  // Fetch the budget from the backend on component mount
+  useEffect(() => {
+    const loadBudget = async () => {
+      try {
+        const fetchedBudget = await fetchBudget();
+        setBudget(fetchedBudget); // Set the fetched budget in the context
+        setInputValue(fetchedBudget.toString()); // Synchronize input value with fetched budget
+      } catch (error) {
+        console.error("Failed to load budget:", error);
+      }
+    };
+
+    loadBudget();
+  }, [setBudget]);
+
   const handleEdit = () => {
     setEditMode(true);
   };
 
-  const handleSave = () => {
-    setBudget(parseFloat(inputValue));
+  const handleSave = async () => {
+    const updatedBudget = parseFloat(inputValue);
+    setBudget(updatedBudget); // Update budget in context immediately
+
+    try {
+      // Save the updated budget to the backend
+      await updateBudget(updatedBudget);
+      console.log("Budget updated successfully");
+    } catch (error) {
+      console.error("Failed to update budget:", error);
+    }
+
     setEditMode(false);
   };
 

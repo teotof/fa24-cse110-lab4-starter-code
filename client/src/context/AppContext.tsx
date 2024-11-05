@@ -1,5 +1,6 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
 import { Expense } from "../types/types";
+import { fetchBudget } from "../utils/budget-utils";
 
 // Exercise: Create add budget to the context
 
@@ -13,7 +14,7 @@ interface AppContextType {
 const initialState: AppContextType = {
   expenses: [],
   setExpenses: () => { },
-  budget: 1000,  // Default budget
+  budget: 0,
   setBudget: () => { },
 };
 
@@ -22,6 +23,20 @@ export const AppContext = createContext<AppContextType>(initialState);
 export const AppProvider = (props: any) => {
   const [expenses, setExpenses] = useState<Expense[]>(initialState.expenses);
   const [budget, setBudget] = useState<number>(initialState.budget);
+
+  // Fetch initial budget from the server on component mount
+  useEffect(() => {
+    const loadInitialBudget = async () => {
+      try {
+        const fetchedBudget = await fetchBudget();
+        setBudget(fetchedBudget); // Set the initial budget from the server
+      } catch (error) {
+        console.error("Failed to load budget:", error);
+      }
+    };
+
+    loadInitialBudget();
+  }, []);
 
   return (
     <AppContext.Provider

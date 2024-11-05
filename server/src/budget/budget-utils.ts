@@ -7,5 +7,16 @@ export function getBudget(res: Response, budget: number) {
 
 // Function to update the budget
 export function updateBudget(res: Response, body: any, budget: { amount: number }) {
-    // TO DO: Implement updateBudget function
+    const { amount } = body;
+
+    // Validate that 'amount' is provided and is a valid number
+    if (typeof amount !== 'number' || amount < 0) {
+        return res.status(400).send({ error: "Invalid 'amount' field in request body" });
+    }
+
+    // Update the budget amount
+    budget.amount = amount;
+
+    // Respond with the updated budget
+    res.status(200).send({ data: budget.amount });
 }
