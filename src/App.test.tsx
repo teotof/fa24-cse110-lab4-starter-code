@@ -23,7 +23,7 @@ describe('App functionality', () => {
     fireEvent.click(addButton);
 
     // Assertion
-    expect(screen.getByText(/test expense/i)).toBeInTheDocument();
+    expect(screen.getByText(/test expense!!/i)).toBeInTheDocument();
     let totalExpensesAfterAdd = extractNumbers(screen.getByText(/spent so far: \$100/i));
     let remainingAfterAdd = extractNumbers(screen.getByText(/remaining: \$900/i));
     verifyBudgetEquation(initialBudget, totalExpensesAfterAdd, remainingAfterAdd);
